@@ -59,6 +59,7 @@ export class Card {
       case 9:
         this.value = 9;
         break;
+      case 10:
       case "J":
       case "Q":
       case "K":
