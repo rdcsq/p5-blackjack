@@ -1,31 +1,37 @@
-export type CardValue =
-  | "A1"
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | "A11"
-  | "J"
-  | "Q"
-  | "K";
+const cardValueList = [
+  "A",
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  "J",
+  "Q",
+  "K",
+] as const;
 
-export type CardType = "clubs" | "diamonds" | "hearts" | "spades";
+export type CardValue = (typeof cardValueList)[number];
+
+const cardTypeList = ["clubs", "diamonds", "hearts", "spades"] as const;
+
+export type CardType = (typeof cardTypeList)[number];
+
+const currentDeck: string[] = [];
 
 export class Card {
   private value!: number;
 
   constructor(
     private cardType: CardType,
-    cardValue: CardValue,
+    private cardValue: CardValue,
+    ifAIsOne: boolean,
   ) {
     switch (cardValue) {
-      case "A1":
       case 1:
         this.value = 1;
         break;
@@ -58,13 +64,45 @@ export class Card {
       case "K":
         this.value = 10;
         break;
-      case "A11":
-        this.value = 11;
+      case "A": {
+        this.value = ifAIsOne ? 1 : 11;
         break;
+      }
     }
   }
 
-  getValue = () => this.value;
+  getNumericalValue = () => this.value;
+
+  getValue = () => this.cardValue;
 
   getType = () => this.cardType;
+
+  setACardAs = (value: 1 | 11) => {
+    if (this.cardValue == "A") this.value = value;
+  };
+
+  static generateRandomCard = (): Card => {
+    const result = Math.random();
+
+    let i = 0;
+    for (let j = 0; j <= result; i++, j += 1 / cardValueList.length) {}
+    i--;
+
+    let type = cardTypeList[Math.floor(Math.random() * 4)];
+    let value = cardValueList[i];
+
+    // prevent cards from repeating
+    let valueSearch = `${type}${value}`;
+    if (currentDeck.find((x) => x == valueSearch) != undefined) {
+      return this.generateRandomCard();
+    }
+
+    currentDeck.push(valueSearch);
+
+    return new Card(
+      cardTypeList[Math.floor(Math.random() * 4)],
+      cardValueList[i],
+      true,
+    );
+  };
 }
