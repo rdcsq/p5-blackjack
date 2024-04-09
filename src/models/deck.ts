@@ -11,4 +11,6 @@ export class Deck {
 
   getValue = (): number =>
     this.cards.reduce((x, card) => (x += card.getNumericalValue()), 0);
+
+  getCards = () => this.cards;
 }

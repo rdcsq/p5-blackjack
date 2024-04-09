@@ -17,7 +17,7 @@ const cardValueList = [
 
 export type CardValue = (typeof cardValueList)[number];
 
-const cardTypeList = ["clubs", "diamonds", "hearts", "spades"] as const;
+const cardTypeList = ["♣", "♦", "♥", "♠"] as const;
 
 export type CardType = (typeof cardTypeList)[number];
 
@@ -81,6 +81,8 @@ export class Card {
     if (this.cardValue == "A") this.value = value;
   };
 
+  toString = () => `${this.cardValue.toString()}\n${this.cardType.toString()}`;
+
   static generateRandomCard = (): Card => {
     const result = Math.random();
 
@@ -102,7 +104,7 @@ export class Card {
     return new Card(
       cardTypeList[Math.floor(Math.random() * 4)],
       cardValueList[i],
-      true,
+      Math.random() > 0.5,
     );
   };
 }
