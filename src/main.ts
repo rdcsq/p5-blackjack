@@ -1,40 +1,49 @@
 import p5 from "p5";
 import { GameState } from "./state";
 import { drawDeck } from "./components/deck";
+import { Simulation } from "./simulation";
 
 // @ts-ignore
 window.p5 = p5;
 // @ts-ignore
 const s: p5 = window;
 
+let simulation: Simulation;
 let state: GameState;
+
 let nextTurnButton: p5.Element;
 let takeCardSecondTurn: p5.Element;
 let keepSecondTurn: p5.Element;
 
 s.setup = () => {
   s.createCanvas(900, 500);
-  s.noLoop();
 
-  // const players = Number.parseInt(prompt("Cantidad de jugadores") ?? "4");
-  state = new GameState(4);
+  const numberOfGames = Number.parseInt(
+    prompt("Cantidad de juegos a jugar:") ?? "1",
+  );
+  const players = Number.parseInt(prompt("Cantidad de jugadores") ?? "4");
+  simulation = new Simulation(numberOfGames, players);
+  simulation.start();
+  // state = new GameState(4);
 
-  nextTurnButton = s.createButton("Siguiente turno");
-  nextTurnButton.position(50, 50);
-  nextTurnButton.mouseClicked(nextTurnButtonMouseClicked);
+  // nextTurnButton = s.createButton("Siguiente turno");
+  // nextTurnButton.position(50, 50);
+  // nextTurnButton.mouseClicked(nextTurnButtonMouseClicked);
 
-  takeCardSecondTurn = s.createButton("Pedir carta");
-  takeCardSecondTurn.position(50, 50);
-  takeCardSecondTurn.hide();
-  takeCardSecondTurn.mouseClicked(takeCardSecondTurnMouseClicked);
+  // takeCardSecondTurn = s.createButton("Pedir carta");
+  // takeCardSecondTurn.position(50, 50);
+  // takeCardSecondTurn.hide();
+  // takeCardSecondTurn.mouseClicked(takeCardSecondTurnMouseClicked);
 
-  keepSecondTurn = s.createButton("Continuar");
-  keepSecondTurn.position(50, 75);
-  keepSecondTurn.hide();
-  keepSecondTurn.mouseClicked(keepSecondTurnMouseClicked);
+  // keepSecondTurn = s.createButton("Continuar");
+  // keepSecondTurn.position(50, 75);
+  // keepSecondTurn.hide();
+  // keepSecondTurn.mouseClicked(keepSecondTurnMouseClicked);
 };
 
 s.draw = () => {
+  let state = simulation.getCurrentGame();
+
   s.background(255, 255, 255);
   drawDeck(s, 500, 100, state.getDealer(), state.getDealerShowCards());
   state.getPlayers().forEach((player, i) => {
@@ -42,6 +51,9 @@ s.draw = () => {
   });
 
   if (state.getDealerShowCards()) {
+    takeCardSecondTurn.hide();
+    keepSecondTurn.hide();
+
     s.push();
     s.textSize(25);
     s.textAlign("center");
@@ -68,7 +80,6 @@ function nextTurnButtonMouseClicked() {
   nextTurnButton.hide();
   takeCardSecondTurn.show();
   keepSecondTurn.show();
-  s.redraw();
 }
 
 function takeCardSecondTurnMouseClicked() {
@@ -77,12 +88,10 @@ function takeCardSecondTurnMouseClicked() {
     takeCardSecondTurn.hide();
     keepSecondTurn.hide();
   }
-  s.redraw();
 }
 
 function keepSecondTurnMouseClicked() {
   state.finishGame();
   takeCardSecondTurn.hide();
   keepSecondTurn.hide();
-  s.redraw();
 }

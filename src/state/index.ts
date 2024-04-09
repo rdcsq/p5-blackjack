@@ -23,7 +23,7 @@ export class GameState {
       let deck = new Deck();
       let card = Card.generateRandomCard();
       if (card.getValue() == "A" && i == 0) {
-        card.setACardAs(this.askForCardA() ? 1 : 11);
+        card.setACardAs(Math.random() > 0.5 ? 1 : 11);
       }
       deck.addCard(card);
       this.players.push({
@@ -65,7 +65,7 @@ export class GameState {
         card = Card.generateRandomCard();
 
         if (i == 0 && card.getValue() == "A") {
-          card.setACardAs(this.askForCardA() ? 1 : 11);
+          card.setACardAs(Math.random() > 0.5 ? 1 : 11);
         }
       }
 
